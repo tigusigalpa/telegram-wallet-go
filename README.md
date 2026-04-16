@@ -1,14 +1,19 @@
 # Telegram Wallet Pay Go SDK
 
+![Telegram Wallet Go SDK](https://i.postimg.cc/FsYbYdhJ/telegram-wallet-go-banner.jpg)
+
 [![Go Version](https://img.shields.io/github/go-mod/go-version/tigusigalpa/telegram-wallet-go)](https://github.com/tigusigalpa/telegram-wallet-go)
 [![License](https://img.shields.io/github/license/tigusigalpa/telegram-wallet-go)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tigusigalpa/telegram-wallet-go)](https://goreportcard.com/report/github.com/tigusigalpa/telegram-wallet-go)
 
-Accept crypto payments in your Telegram bot with just a few lines of Go code. This SDK wraps the [Telegram Wallet Pay](https://pay.wallet.tg/) API, letting your users pay with TON, USDT, BTC, and NOT — right inside Telegram.
+Accept crypto payments in your Telegram bot with just a few lines of Go code. This SDK wraps
+the [Telegram Wallet Pay](https://pay.wallet.tg/) API, letting your users pay with TON, USDT, BTC, and NOT — right
+inside Telegram.
 
 ## Why This SDK?
 
-If you're building a Telegram bot and want to accept crypto payments, you've come to the right place. We've done the heavy lifting so you can focus on your product:
+If you're building a Telegram bot and want to accept crypto payments, you've come to the right place. We've done the
+heavy lifting so you can focus on your product:
 
 - **Get started in minutes** — Simple, clean API that feels natural in Go
 - **Battle-tested security** — Webhook signatures verified with HMAC-SHA256
@@ -139,38 +144,38 @@ client := walletpay.NewClient(
 
 ### Options at a Glance
 
-| Option | What it does | Default |
-|--------|--------------|---------|
-| `WithBaseURL(url)` | Set custom base URL | `https://pay.wallet.tg` |
-| `WithTimeout(duration)` | Set HTTP client timeout | `30s` |
-| `WithHTTPClient(client)` | Use custom HTTP client | Standard `http.Client` |
+| Option                   | What it does            | Default                 |
+|--------------------------|-------------------------|-------------------------|
+| `WithBaseURL(url)`       | Set custom base URL     | `https://pay.wallet.tg` |
+| `WithTimeout(duration)`  | Set HTTP client timeout | `30s`                   |
+| `WithHTTPClient(client)` | Use custom HTTP client  | Standard `http.Client`  |
 
 ## API Reference
 
 Here's everything you can do with the client:
 
-| Method | Parameters | Returns | Description |
-|--------|------------|---------|-------------|
-| `CreateOrder()` | `ctx, CreateOrderRequest` | `*OrderPreview, error` | Create a new payment order |
-| `GetOrderPreview()` | `ctx, orderID string` | `*OrderPreview, error` | Get order details by ID |
-| `GetOrderList()` | `ctx, offset int64, count int32` | `[]OrderPreview, error` | Get paginated list of orders (max 10,000) |
-| `GetOrderAmount()` | `ctx` | `int64, error` | Get total count of all orders |
-| `VerifyWebhook()` | `method, path, timestamp, body, signature` | `error` | Verify webhook signature |
-| `VerifyAndParseWebhook()` | `method, path, timestamp, body, signature` | `[]WebhookEvent, error` | Verify and parse webhook |
+| Method                    | Parameters                                 | Returns                 | Description                               |
+|---------------------------|--------------------------------------------|-------------------------|-------------------------------------------|
+| `CreateOrder()`           | `ctx, CreateOrderRequest`                  | `*OrderPreview, error`  | Create a new payment order                |
+| `GetOrderPreview()`       | `ctx, orderID string`                      | `*OrderPreview, error`  | Get order details by ID                   |
+| `GetOrderList()`          | `ctx, offset int64, count int32`           | `[]OrderPreview, error` | Get paginated list of orders (max 10,000) |
+| `GetOrderAmount()`        | `ctx`                                      | `int64, error`          | Get total count of all orders             |
+| `VerifyWebhook()`         | `method, path, timestamp, body, signature` | `error`                 | Verify webhook signature                  |
+| `VerifyAndParseWebhook()` | `method, path, timestamp, body, signature` | `[]WebhookEvent, error` | Verify and parse webhook                  |
 
 ### Order Request Fields
 
-| Field | Type | Required | What it's for |
-|-------|------|----------|---------------|
-| `Amount` | `MoneyAmount` | Yes | How much to charge (e.g., `{"USD", "9.99"}`) |
-| `Description` | `string` | Yes | What the user sees (5-100 chars) |
-| `ExternalID` | `string` | Yes | Your order ID — use this to match payments |
-| `TimeoutSeconds` | `int64` | Yes | How long the order stays valid (30s to 10 days) |
-| `CustomerTelegramUserID` | `int64` | Yes | Only this Telegram user can pay |
-| `AutoConversionCurrency` | `string` | No | Convert payment to TON/USDT/BTC/NOT (+1% fee) |
-| `ReturnURL` | `string` | No | Where to send user after payment |
-| `FailReturnURL` | `string` | No | Where to send user if payment fails |
-| `CustomData` | `string` | No | Your metadata — comes back in webhooks |
+| Field                    | Type          | Required | What it's for                                   |
+|--------------------------|---------------|----------|-------------------------------------------------|
+| `Amount`                 | `MoneyAmount` | Yes      | How much to charge (e.g., `{"USD", "9.99"}`)    |
+| `Description`            | `string`      | Yes      | What the user sees (5-100 chars)                |
+| `ExternalID`             | `string`      | Yes      | Your order ID — use this to match payments      |
+| `TimeoutSeconds`         | `int64`       | Yes      | How long the order stays valid (30s to 10 days) |
+| `CustomerTelegramUserID` | `int64`       | Yes      | Only this Telegram user can pay                 |
+| `AutoConversionCurrency` | `string`      | No       | Convert payment to TON/USDT/BTC/NOT (+1% fee)   |
+| `ReturnURL`              | `string`      | No       | Where to send user after payment                |
+| `FailReturnURL`          | `string`      | No       | Where to send user if payment fails             |
+| `CustomData`             | `string`      | No       | Your metadata — comes back in webhooks          |
 
 ### Currencies You Can Use
 
@@ -181,16 +186,17 @@ Here's everything you can do with the client:
 
 Orders go through these states:
 
-| Status | Meaning |
-|--------|--------|
-| `ACTIVE` | Waiting for payment |
-| `PAID` | Payment received! 🎉 |
-| `EXPIRED` | Time ran out |
+| Status      | Meaning                  |
+|-------------|--------------------------|
+| `ACTIVE`    | Waiting for payment      |
+| `PAID`      | Payment received! 🎉     |
+| `EXPIRED`   | Time ran out             |
 | `CANCELLED` | User or system cancelled |
 
 ### Webhook Events
 
 You'll receive one of these:
+
 - `ORDER_PAID` — Money's in! Time to deliver.
 - `ORDER_FAILED` — Something went wrong (expired, cancelled, etc.)
 
@@ -201,11 +207,13 @@ Webhooks tell you when payments happen. Here's how to set them up properly.
 ### Step 1: Configure Your URL
 
 In your Wallet Pay store settings, set the webhook URL to something like:
+
 ```
 https://yourdomain.com/webhook/walletpay
 ```
 
 **Important:**
+
 - Must be HTTPS with a real SSL certificate (Let's Encrypt works great)
 - Self-signed certs won't work
 - Always return HTTP 200 to confirm receipt
@@ -213,12 +221,14 @@ https://yourdomain.com/webhook/walletpay
 ### Step 2: Allowlist Wallet Pay IPs
 
 If you have a firewall, allow these IPs:
+
 - `188.42.38.156`
 - `172.255.249.124`
 
 ### Step 3: Handle Duplicate Webhooks
 
-Wallet Pay might send the same webhook multiple times (network issues happen). Use `EventID` to avoid processing duplicates:
+Wallet Pay might send the same webhook multiple times (network issues happen). Use `EventID` to avoid processing
+duplicates:
 
 ```go
 var processedEvents sync.Map // or use Redis, database, etc.
@@ -333,14 +343,14 @@ e.POST("/webhook/walletpay", func(c echo.Context) error {
 
 Errors are typed, so you can handle them gracefully:
 
-| Error Type | What happened |
-|------------|---------------|
-| `*RequestError` | Bad request (check your parameters) |
-| `*AuthError` | Invalid API key |
-| `*NotFoundError` | Order doesn't exist |
-| `*RateLimitError` | Slow down! Too many requests |
-| `*ServerError` | Wallet Pay is having issues |
-| `ErrInvalidSignature` | Webhook signature doesn't match |
+| Error Type            | What happened                       |
+|-----------------------|-------------------------------------|
+| `*RequestError`       | Bad request (check your parameters) |
+| `*AuthError`          | Invalid API key                     |
+| `*NotFoundError`      | Order doesn't exist                 |
+| `*RateLimitError`     | Slow down! Too many requests        |
+| `*ServerError`        | Wallet Pay is having issues         |
+| `ErrInvalidSignature` | Webhook signature doesn't match     |
 
 ### Example
 
@@ -495,6 +505,7 @@ The payment link (`DirectPayLink`) needs to be opened correctly:
 ### Payment Button Text
 
 Telegram requires specific button text:
+
 - `👛 Wallet Pay`
 - `👛 Pay via Wallet`
 
@@ -502,7 +513,8 @@ Yes, the purse emoji is mandatory. 👛
 
 ### Preventing Duplicate Orders
 
-Use `ExternalID` as your idempotency key. If you retry with the same ID, you'll get the existing order back instead of creating a duplicate:
+Use `ExternalID` as your idempotency key. If you retry with the same ID, you'll get the existing order back instead of
+creating a duplicate:
 
 ```go
 externalID := fmt.Sprintf("ORDER-%d-%d-%d", userID, productID, time.Now().Unix())
@@ -511,6 +523,7 @@ externalID := fmt.Sprintf("ORDER-%d-%d-%d", userID, productID, time.Now().Unix()
 ### Auto-Conversion Fees
 
 Want to receive payments in a specific crypto? Set `AutoConversionCurrency`, but note:
+
 - **1% fee** applies
 - Minimum: **$1.30** (or $3 for BTC)
 
@@ -554,7 +567,8 @@ Check out the [`examples/`](examples/) directory for the full code.
 
 ## What's Next?
 
-This SDK is built to grow. The architecture separates payment functionality from future trading features (spot trading, tokenized stocks, perpetual futures). When Wallet adds new APIs, we'll add support without breaking your existing code.
+This SDK is built to grow. The architecture separates payment functionality from future trading features (spot trading,
+tokenized stocks, perpetual futures). When Wallet adds new APIs, we'll add support without breaking your existing code.
 
 ## Contributing
 
