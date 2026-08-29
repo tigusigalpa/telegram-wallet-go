@@ -2,7 +2,7 @@ package walletpay
 
 import (
 	"context"
-	"fmt"
+	"net/url"
 )
 
 // CreateOrder creates a new payment order.
@@ -22,7 +22,8 @@ func (c *Client) CreateOrder(ctx context.Context, req CreateOrderRequest) (*Orde
 
 // GetOrderPreview retrieves the current state of an order by its ID.
 func (c *Client) GetOrderPreview(ctx context.Context, orderID string) (*OrderPreview, error) {
-	path := fmt.Sprintf("/wpay/store-api/v1/order/preview?id=%s", orderID)
+	query := url.Values{"id": []string{orderID}}
+	path := "/wpay/store-api/v1/order/preview?" + query.Encode()
 	resp, err := c.doRequest(ctx, "GET", path, nil)
 	if err != nil {
 		return nil, err

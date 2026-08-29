@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 func (c *Client) doRequest(ctx context.Context, method, path string, body interface{}) (*http.Response, error) {
@@ -19,7 +20,7 @@ func (c *Client) doRequest(ctx context.Context, method, path string, body interf
 		reqBody = bytes.NewReader(jsonData)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, method, c.baseURL+path, reqBody)
+	req, err := http.NewRequestWithContext(ctx, method, strings.TrimRight(c.baseURL, "/")+path, reqBody)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -37,6 +38,10 @@ func (c *Client) doRequest(ctx context.Context, method, path string, body interf
 }
 
 func (c *Client) handleErrorResponse(statusCode int, message string) error {
+	if statusCode >= http.StatusInternalServerError && statusCode <= 599 {
+		return &ServerError{Message: message, StatusCode: statusCode}
+	}
+
 	switch statusCode {
 	case 400:
 		return &RequestError{Code: 400, Message: message, StatusCode: statusCode}
@@ -46,8 +51,6 @@ func (c *Client) handleErrorResponse(statusCode int, message string) error {
 		return &NotFoundError{Message: message, StatusCode: statusCode}
 	case 429:
 		return &RateLimitError{Message: message, StatusCode: statusCode}
-	case 500:
-		return &ServerError{Message: message, StatusCode: statusCode}
 	default:
 		return &APIError{Message: message, StatusCode: statusCode}
 	}
@@ -67,6 +70,18 @@ func (c *Client) parseResponse(resp *http.Response, result interface{}) error {
 			return c.handleErrorResponse(resp.StatusCode, "unknown error")
 		}
 		return c.handleErrorResponse(resp.StatusCode, apiResp.Message)
+	}
+
+	var apiResp apiResponse
+	if err := json.Unmarshal(body, &apiResp); err != nil {
+		return fmt.Errorf("failed to unmarshal response: %w", err)
+	}
+	if apiResp.Status != "SUCCESS" {
+		message := apiResp.Message
+		if message == "" {
+			message = "unexpected API response status: " + apiResp.Status
+		}
+		return &APIError{Message: message, StatusCode: resp.StatusCode}
 	}
 
 	if result != nil {

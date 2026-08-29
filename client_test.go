@@ -89,6 +89,27 @@ func TestGetOrderPreview(t *testing.T) {
 	assert.NotNil(t, order.CompletedDateTime)
 }
 
+func TestGetOrderPreviewEncodesOrderID(t *testing.T) {
+	const orderID = "order&include=other"
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/wpay/store-api/v1/order/preview", r.URL.Path)
+		assert.Equal(t, orderID, r.URL.Query().Get("id"))
+		assert.Empty(t, r.URL.Query().Get("include"))
+
+		json.NewEncoder(w).Encode(orderResponse{
+			Status: "SUCCESS",
+			Data:   OrderPreview{ID: 1},
+		})
+	}))
+	defer server.Close()
+
+	client := NewClient("test-api-key", WithBaseURL(server.URL+"/"))
+	order, err := client.GetOrderPreview(context.Background(), orderID)
+
+	require.NoError(t, err)
+	assert.Equal(t, int64(1), order.ID)
+}
+
 func TestGetOrderList(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
@@ -207,6 +228,13 @@ func TestErrorHandling(t *testing.T) {
 			expectedErrMsg: "Internal server error",
 			expectedType:   &ServerError{},
 		},
+		{
+			name:           "503 Service Unavailable",
+			statusCode:     503,
+			responseBody:   `{"status":"ERROR","message":"Service unavailable"}`,
+			expectedErrMsg: "Service unavailable",
+			expectedType:   &ServerError{},
+		},
 	}
 
 	for _, tt := range tests {
@@ -227,6 +255,23 @@ func TestErrorHandling(t *testing.T) {
 	}
 }
 
+func TestSuccessfulHTTPResponseWithAPIError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		json.NewEncoder(w).Encode(apiResponse{
+			Status:  "ERROR",
+			Message: "Order cannot be created",
+		})
+	}))
+	defer server.Close()
+
+	client := NewClient("test-api-key", WithBaseURL(server.URL))
+	_, err := client.GetOrderPreview(context.Background(), "123")
+
+	require.Error(t, err)
+	assert.IsType(t, &APIError{}, err)
+	assert.Equal(t, "walletpay: api error (status 200): Order cannot be created", err.Error())
+}
+
 func TestClientOptions(t *testing.T) {
 	t.Run("WithBaseURL", func(t *testing.T) {
 		client := NewClient("test-key", WithBaseURL("https://custom.url"))
@@ -242,5 +287,10 @@ func TestClientOptions(t *testing.T) {
 		customClient := &http.Client{Timeout: 90 * time.Second}
 		client := NewClient("test-key", WithHTTPClient(customClient))
 		assert.Equal(t, customClient, client.httpClient)
+	})
+
+	t.Run("WithHTTPClient nil", func(t *testing.T) {
+		client := NewClient("test-key", WithHTTPClient(nil))
+		assert.NotNil(t, client.httpClient)
 	})
 }

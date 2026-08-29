@@ -35,9 +35,13 @@ func GinWebhookMiddleware(client *walletpay.Client) gin.HandlerFunc {
 			return
 		}
 
-		events, err := client.VerifyAndParseWebhook(c.Request.Method, c.Request.URL.Path, timestamp, body, signature)
-		if err != nil {
+		if err := client.VerifyWebhook(c.Request.Method, c.Request.URL.Path, timestamp, body, signature); err != nil {
 			c.AbortWithStatusJSON(401, gin.H{"error": "invalid signature"})
+			return
+		}
+		events, err := walletpay.ParseWebhookEvents(body)
+		if err != nil {
+			c.AbortWithStatusJSON(400, gin.H{"error": "invalid payload"})
 			return
 		}
 

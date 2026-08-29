@@ -40,13 +40,18 @@ func WithBaseURL(url string) Option {
 // WithHTTPClient sets a custom HTTP client.
 func WithHTTPClient(hc *http.Client) Option {
 	return func(c *Client) {
-		c.httpClient = hc
+		if hc != nil {
+			c.httpClient = hc
+		}
 	}
 }
 
 // WithTimeout sets the HTTP client timeout.
 func WithTimeout(d time.Duration) Option {
 	return func(c *Client) {
+		if c.httpClient == nil {
+			c.httpClient = &http.Client{}
+		}
 		c.httpClient.Timeout = d
 	}
 }

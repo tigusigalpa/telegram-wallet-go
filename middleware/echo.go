@@ -35,9 +35,12 @@ func EchoWebhookMiddleware(client *walletpay.Client) echo.MiddlewareFunc {
 				return c.JSON(400, map[string]string{"error": "cannot read body"})
 			}
 
-			events, err := client.VerifyAndParseWebhook(c.Request().Method, c.Request().URL.Path, timestamp, body, signature)
-			if err != nil {
+			if err := client.VerifyWebhook(c.Request().Method, c.Request().URL.Path, timestamp, body, signature); err != nil {
 				return c.JSON(401, map[string]string{"error": "invalid signature"})
+			}
+			events, err := walletpay.ParseWebhookEvents(body)
+			if err != nil {
+				return c.JSON(400, map[string]string{"error": "invalid payload"})
 			}
 
 			c.Set("walletpay_events", events)

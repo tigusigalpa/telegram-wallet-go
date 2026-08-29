@@ -1,4 +1,4 @@
-# Telegram Wallet Pay Go SDK
+# Telegram Wallet Pay Golang SDK
 
 ![Telegram Wallet Go SDK](https://i.postimg.cc/FsYbYdhJ/telegram-wallet-go-banner.jpg)
 
@@ -23,7 +23,7 @@ heavy lifting so you can focus on your product:
 - **Get started in minutes** — Simple, clean API that feels natural in Go
 - **Battle-tested security** — Webhook signatures verified with HMAC-SHA256
 - **Works with your stack** — Native support for net/http, Gin, and Echo
-- **No bloat** — Zero external dependencies for the core client
+- **No bloat** — Core client uses only the Go standard library; Gin and Echo adapters are optional
 - **Production-ready** — Comprehensive tests and proper error handling
 
 ## Installation
@@ -568,7 +568,8 @@ go run examples/create_order/main.go
 go run examples/webhook_server/main.go
 ```
 
-Check out the [`examples/`](examples/) directory for the full code.
+See the working [order-creation example](examples/create_order/main.go) and
+[webhook-server example](examples/webhook_server/main.go) for the full code.
 
 ## What's Next?
 

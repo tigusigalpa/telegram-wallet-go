@@ -37,7 +37,19 @@ jobs:
         run: go vet ./...
 
       - name: Run tests with race detection
-        run: go test -race -covermode=atomic -coverprofile=coverage.out ./...
+        run: go test -race ./...
+
+      - name: Build Gin adapter
+        run: go test -tags gin ./middleware
+
+      - name: Build Echo adapter
+        run: go test -tags echo ./middleware
+
+      - name: Generate library coverage report
+        run: >-
+          go test -covermode=atomic
+          -coverpkg=github.com/tigusigalpa/telegram-wallet-go,github.com/tigusigalpa/telegram-wallet-go/middleware
+          -coverprofile=coverage.out . ./middleware
 
       - name: Upload coverage to Codecov
         if: matrix.go == '1.21' && env.CODECOV_TOKEN != ''
