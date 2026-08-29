@@ -2,9 +2,14 @@
 
 ![Telegram Wallet Go SDK](https://i.postimg.cc/FsYbYdhJ/telegram-wallet-go-banner.jpg)
 
-[![Go Version](https://img.shields.io/github/go-mod/go-version/tigusigalpa/telegram-wallet-go)](https://github.com/tigusigalpa/telegram-wallet-go)
-[![License](https://img.shields.io/github/license/tigusigalpa/telegram-wallet-go)](LICENSE)
+[![CI](https://github.com/tigusigalpa/telegram-wallet-go/actions/workflows/ci.yml/badge.svg)](https://github.com/tigusigalpa/telegram-wallet-go/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/tigusigalpa/telegram-wallet-go/actions/workflows/codeql.yml/badge.svg)](https://github.com/tigusigalpa/telegram-wallet-go/actions/workflows/codeql.yml)
+[![Codecov](https://codecov.io/gh/tigusigalpa/telegram-wallet-go/graph/badge.svg)](https://codecov.io/gh/tigusigalpa/telegram-wallet-go)
+[![Go Reference](https://pkg.go.dev/badge/github.com/tigusigalpa/telegram-wallet-go.svg)](https://pkg.go.dev/github.com/tigusigalpa/telegram-wallet-go)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/tigusigalpa/telegram-wallet-go?logo=go)](https://github.com/tigusigalpa/telegram-wallet-go)
+[![License](https://img.shields.io/github/license/tigusigalpa/telegram-wallet-go?color=blue)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tigusigalpa/telegram-wallet-go)](https://goreportcard.com/report/github.com/tigusigalpa/telegram-wallet-go)
+[![Last Commit](https://img.shields.io/github/last-commit/tigusigalpa/telegram-wallet-go?logo=git)](https://github.com/tigusigalpa/telegram-wallet-go/commits/main)
 
 Accept crypto payments in your Telegram bot with just a few lines of Go code. This SDK wraps
 the [Telegram Wallet Pay](https://pay.wallet.tg/) API, letting your users pay with TON, USDT, BTC, and NOT — right

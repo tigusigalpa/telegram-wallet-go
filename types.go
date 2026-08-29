@@ -25,9 +25,13 @@ type CreateOrderRequest struct {
 type OrderStatus string
 
 const (
-	OrderStatusActive    OrderStatus = "ACTIVE"
-	OrderStatusExpired   OrderStatus = "EXPIRED"
-	OrderStatusPaid      OrderStatus = "PAID"
+	// OrderStatusActive indicates that an order is awaiting payment.
+	OrderStatusActive OrderStatus = "ACTIVE"
+	// OrderStatusExpired indicates that an unpaid order has expired.
+	OrderStatusExpired OrderStatus = "EXPIRED"
+	// OrderStatusPaid indicates that an order has been paid.
+	OrderStatusPaid OrderStatus = "PAID"
+	// OrderStatusCancelled indicates that an order has been cancelled.
 	OrderStatusCancelled OrderStatus = "CANCELLED"
 )
 
@@ -49,7 +53,9 @@ type OrderPreview struct {
 type WebhookEventType string
 
 const (
-	WebhookEventOrderPaid   WebhookEventType = "ORDER_PAID"
+	// WebhookEventOrderPaid is emitted when an order is paid.
+	WebhookEventOrderPaid WebhookEventType = "ORDER_PAID"
+	// WebhookEventOrderFailed is emitted when an order payment fails.
 	WebhookEventOrderFailed WebhookEventType = "ORDER_FAILED"
 )
 
@@ -63,14 +69,14 @@ type WebhookEvent struct {
 
 // WebhookPayload contains the order data from a webhook event.
 type WebhookPayload struct {
-	ID                     int64           `json:"id"`
-	Number                 string          `json:"number"`
-	CustomData             string          `json:"customData,omitempty"`
-	ExternalID             string          `json:"externalId"`
-	OrderAmount            MoneyAmount     `json:"orderAmount"`
-	SelectedPaymentOption  *PaymentOption  `json:"selectedPaymentOption,omitempty"`
-	OrderCompletedDateTime *time.Time      `json:"orderCompletedDateTime,omitempty"`
-	Status                 *OrderStatus    `json:"status,omitempty"`
+	ID                     int64          `json:"id"`
+	Number                 string         `json:"number"`
+	CustomData             string         `json:"customData,omitempty"`
+	ExternalID             string         `json:"externalId"`
+	OrderAmount            MoneyAmount    `json:"orderAmount"`
+	SelectedPaymentOption  *PaymentOption `json:"selectedPaymentOption,omitempty"`
+	OrderCompletedDateTime *time.Time     `json:"orderCompletedDateTime,omitempty"`
+	Status                 *OrderStatus   `json:"status,omitempty"`
 }
 
 // PaymentOption describes how the payer chose to pay.

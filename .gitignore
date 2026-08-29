@@ -10,14 +10,25 @@
 
 # Output of the go coverage tool
 *.out
-coverage.txt
 coverage.html
+coverage.txt
+
+# Local Go build and test caches
+.cache/
+.gocache/
+.gotmp/
+coverage/
+test-results/
 
 # Dependency directories
 vendor/
 
 # Go workspace file
 go.work
+
+# Environment variables
+.env
+.env.local
 
 # IDE
 .idea/
