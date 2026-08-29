@@ -1,6 +1,6 @@
 # Telegram Wallet Pay Golang SDK
 
-![Telegram Wallet Go SDK](https://i.postimg.cc/FsYbYdhJ/telegram-wallet-go-banner.jpg)
+![Telegram Wallet Go SDK](https://i.postimg.cc/yNT6rdfH/telegram-wallet-api-golang-github.jpg)
 
 [![CI](https://github.com/tigusigalpa/telegram-wallet-go/actions/workflows/ci.yml/badge.svg)](https://github.com/tigusigalpa/telegram-wallet-go/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/tigusigalpa/telegram-wallet-go/actions/workflows/codeql.yml/badge.svg)](https://github.com/tigusigalpa/telegram-wallet-go/actions/workflows/codeql.yml)
