@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: matrix.go == '1.21' && env.CODECOV_TOKEN != ''
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: coverage.out
           token: ${{ env.CODECOV_TOKEN }}
